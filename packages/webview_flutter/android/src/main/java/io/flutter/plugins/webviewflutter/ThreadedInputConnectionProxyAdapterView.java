@@ -58,7 +58,7 @@ final class ThreadedInputConnectionProxyAdapterView extends View {
   }
 
   /**
-   * This is expected to be called on the IME thread. See the setup required for this in {@link
+   * This is expected to be called on the IME thread. See the setup @required for this in {@link
    * InputAwareWebView#checkInputConnectionProxy(View)}.
    *
    * <p>Delegates to ThreadedInputConnectionProxyView to get WebView's input connection.

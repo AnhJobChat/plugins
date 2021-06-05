@@ -12,7 +12,7 @@ import io.flutter.plugin.common.BinaryMessenger;
  *
  * <p>Register this in an add to app scenario to gracefully handle activity and context changes.
  *
- * <p>Call {@link #registerWith(Registrar)} to use the stable {@code io.flutter.plugin.common}
+ * <p>Call  to use the stable {@code io.flutter.plugin.common}
  * package instead.
  */
 public class WebViewFlutterPlugin implements FlutterPlugin {
@@ -25,8 +25,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
    *
    * <p>THIS PLUGIN CODE PATH DEPENDS ON A NEWER VERSION OF FLUTTER THAN THE ONE DEFINED IN THE
    * PUBSPEC.YAML. Text input will fail on some Android devices unless this is used with at least
-   * flutter/flutter@1d4d63ace1f801a022ea9ec737bf8c15395588b9. Use the V1 embedding with {@link
-   * #registerWith(Registrar)} to use this plugin with older Flutter versions.
+   * flutter/flutter@1d4d63ace1f801a022ea9ec737bf8c15395588b9. Use the V1 embedding with  to use this plugin with older Flutter versions.
    *
    * <p>Registration should eventually be handled automatically by v2 of the
    * GeneratedPluginRegistrant. https://github.com/flutter/flutter/issues/42694
@@ -38,10 +37,11 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
    * package.
    *
    * <p>Calling this automatically initializes the plugin. However plugins initialized this way
-   * won't react to changes in activity or context, unlike {@link CameraPlugin}.
+   * won't react to changes in activity or context, unlike
    */
   @SuppressWarnings("deprecation")
   public static void registerWith(io.flutter.plugin.common.PluginRegistry.Registrar registrar) {
+    Shared.registrar = registrar;
     registrar
         .platformViewRegistry()
         .registerViewFactory(
@@ -52,6 +52,8 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
 
   @Override
   public void onAttachedToEngine(FlutterPluginBinding binding) {
+    Shared.flutterAssets = binding.getFlutterAssets();
+    Shared.applicationContext = binding.getApplicationContext();
     BinaryMessenger messenger = binding.getBinaryMessenger();
     binding
         .getPlatformViewRegistry()
@@ -59,6 +61,7 @@ public class WebViewFlutterPlugin implements FlutterPlugin {
             "plugins.flutter.io/webview", new WebViewFactory(messenger, /*containerView=*/ null));
     flutterCookieManager = new FlutterCookieManager(messenger);
   }
+
 
   @Override
   public void onDetachedFromEngine(FlutterPluginBinding binding) {

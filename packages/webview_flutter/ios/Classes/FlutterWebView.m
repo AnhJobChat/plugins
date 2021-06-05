@@ -8,13 +8,15 @@
 #import "JavaScriptChannelHandler.h"
 
 @implementation FLTWebViewFactory {
+  NSObject<FlutterPluginRegistrar>* _registar;
   NSObject<FlutterBinaryMessenger>* _messenger;
 }
 
-- (instancetype)initWithMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
+- (instancetype)initWithMessenger:(NSObject<FlutterPluginRegistrar>*)registar {
   self = [super init];
   if (self) {
-    _messenger = messenger;
+      _registar = registar;
+    _messenger = registar.messenger;
   }
   return self;
 }
@@ -29,7 +31,8 @@
   FLTWebViewController* webviewController = [[FLTWebViewController alloc] initWithFrame:frame
                                                                          viewIdentifier:viewId
                                                                               arguments:args
-                                                                        binaryMessenger:_messenger];
+                                                                        binaryMessenger:_messenger
+                                                                               registar:_registar];
   return webviewController;
 }
 
@@ -66,15 +69,17 @@
   NSMutableSet* _javaScriptChannelNames;
   FLTWKNavigationDelegate* _navigationDelegate;
   FLTWKProgressionDelegate* _progressionDelegate;
+  NSObject<FlutterPluginRegistrar>* _registar;
 }
 
 - (instancetype)initWithFrame:(CGRect)frame
                viewIdentifier:(int64_t)viewId
                     arguments:(id _Nullable)args
-              binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger {
+              binaryMessenger:(NSObject<FlutterBinaryMessenger>*)messenger
+              registar:(NSObject<FlutterPluginRegistrar>*)registar {
   if (self = [super init]) {
     _viewId = viewId;
-
+      _registar = registar;
     NSString* channelName = [NSString stringWithFormat:@"plugins.flutter.io/webview_%lld", viewId];
     _channel = [FlutterMethodChannel methodChannelWithName:channelName binaryMessenger:messenger];
     _javaScriptChannelNames = [[NSMutableSet alloc] init];
@@ -95,6 +100,9 @@
                         inConfiguration:configuration];
 
     _webView = [[FLTWKWebView alloc] initWithFrame:frame configuration:configuration];
+    _webView.opaque = NO;
+    _webView.backgroundColor = UIColor.clearColor;
+    _webView.scrollView.backgroundColor = UIColor.clearColor;
     _navigationDelegate = [[FLTWKNavigationDelegate alloc] initWithChannel:_channel];
     _webView.UIDelegate = self;
     _webView.navigationDelegate = _navigationDelegate;
@@ -430,14 +438,22 @@
 }
 
 - (bool)loadUrl:(NSString*)url withHeaders:(NSDictionary<NSString*, NSString*>*)headers {
-  NSURL* nsUrl = [NSURL URLWithString:url];
-  if (!nsUrl) {
-    return false;
-  }
-  NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
-  [request setAllHTTPHeaderFields:headers];
-  [_webView loadRequest:request];
-  return true;
+    if([url hasPrefix:@"http"]) {
+        NSURL* nsUrl = [NSURL URLWithString:url];
+        if (!nsUrl) {
+          return false;
+        }
+        NSMutableURLRequest* request = [NSMutableURLRequest requestWithURL:nsUrl];
+        [request setAllHTTPHeaderFields:headers];
+        [_webView loadRequest:request];
+        return true;
+    } else {
+        NSString* key = [_registar lookupKeyForAsset:url];
+        NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
+        NSString* htmlString = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+        [_webView loadHTMLString:htmlString baseURL: [[NSBundle mainBundle] bundleURL]];
+        return true;
+    }
 }
 
 - (void)registerJavaScriptChannels:(NSSet*)channelNames

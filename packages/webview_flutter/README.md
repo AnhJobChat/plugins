@@ -20,7 +20,7 @@ The WebView is relying on
 the Android’s webview within the Flutter app. By default a Virtual Display based platform view
 backend is used, this implementation has multiple
 [keyboard](https://github.com/flutter/flutter/issues?q=is%3Aopen+label%3Avd-only+label%3A%22p%3A+webview-keyboard%22).
-When keyboard input is required we recommend using the Hybrid Composition based platform views
+When keyboard input is @required we recommend using the Hybrid Composition based platform views
 implementation. Note that on Android versions prior to Android 10 Hybrid Composition has some
 [performance drawbacks](https://flutter.dev/docs/development/platform-integration/platform-views#performance).
 

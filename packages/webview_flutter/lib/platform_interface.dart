@@ -21,8 +21,7 @@ abstract class WebViewPlatformCallbacksHandler {
   /// Invoked by [WebViewPlatformController] when a navigation request is pending.
   ///
   /// If true is returned the navigation is allowed, otherwise it is blocked.
-  FutureOr<bool> onNavigationRequest(
-      {required String url, required bool isForMainFrame});
+  FutureOr<bool> onNavigationRequest({@required String url, @required bool isForMainFrame});
 
   /// Invoked by [WebViewPlatformController] when a page has started loading.
   void onPageStarted(String url);
@@ -108,8 +107,8 @@ class WebResourceError {
   /// A user should not need to instantiate this class, but will receive one in
   /// [WebResourceErrorCallback].
   WebResourceError({
-    required this.errorCode,
-    required this.description,
+    @required this.errorCode,
+    @required this.description,
     this.domain,
     this.errorType,
     this.failingUrl,
@@ -136,7 +135,7 @@ class WebResourceError {
   /// in Objective-C. See
   /// https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ErrorHandlingCocoa/ErrorObjectsDomains/ErrorObjectsDomains.html
   /// for more information on error handling on iOS.
-  final String? domain;
+  final String domain;
 
   /// Description of the error that can be used to communicate the problem to the user.
   final String description;
@@ -144,13 +143,13 @@ class WebResourceError {
   /// The type this error can be categorized as.
   ///
   /// This will never be `null` on Android, but can be `null` on iOS.
-  final WebResourceErrorType? errorType;
+  final WebResourceErrorType errorType;
 
   /// Gets the URL for which the resource request was made.
   ///
   /// This value is not provided on iOS. Alternatively, you can keep track of
   /// the last values provided to [WebViewPlatformController.loadUrl].
-  final String? failingUrl;
+  final String failingUrl;
 }
 
 /// Interface for talking to the webview's platform implementation.
@@ -181,10 +180,9 @@ abstract class WebViewPlatformController {
   /// Throws an ArgumentError if `url` is not a valid URL string.
   Future<void> loadUrl(
     String url,
-    Map<String, String>? headers,
+    Map<String, String> headers,
   ) {
-    throw UnimplementedError(
-        "WebView loadUrl is not implemented on the current platform");
+    throw UnimplementedError("WebView loadUrl is not implemented on the current platform");
   }
 
   /// Updates the webview settings.
@@ -192,50 +190,43 @@ abstract class WebViewPlatformController {
   /// Any non null field in `settings` will be set as the new setting value.
   /// All null fields in `settings` are ignored.
   Future<void> updateSettings(WebSettings setting) {
-    throw UnimplementedError(
-        "WebView updateSettings is not implemented on the current platform");
+    throw UnimplementedError("WebView updateSettings is not implemented on the current platform");
   }
 
   /// Accessor to the current URL that the WebView is displaying.
   ///
   /// If no URL was ever loaded, returns `null`.
-  Future<String?> currentUrl() {
-    throw UnimplementedError(
-        "WebView currentUrl is not implemented on the current platform");
+  Future<String> currentUrl() {
+    throw UnimplementedError("WebView currentUrl is not implemented on the current platform");
   }
 
   /// Checks whether there's a back history item.
   Future<bool> canGoBack() {
-    throw UnimplementedError(
-        "WebView canGoBack is not implemented on the current platform");
+    throw UnimplementedError("WebView canGoBack is not implemented on the current platform");
   }
 
   /// Checks whether there's a forward history item.
   Future<bool> canGoForward() {
-    throw UnimplementedError(
-        "WebView canGoForward is not implemented on the current platform");
+    throw UnimplementedError("WebView canGoForward is not implemented on the current platform");
   }
 
   /// Goes back in the history of this WebView.
   ///
   /// If there is no back history item this is a no-op.
   Future<void> goBack() {
-    throw UnimplementedError(
-        "WebView goBack is not implemented on the current platform");
+    throw UnimplementedError("WebView goBack is not implemented on the current platform");
   }
 
   /// Goes forward in the history of this WebView.
   ///
   /// If there is no forward history item this is a no-op.
   Future<void> goForward() {
-    throw UnimplementedError(
-        "WebView goForward is not implemented on the current platform");
+    throw UnimplementedError("WebView goForward is not implemented on the current platform");
   }
 
   /// Reloads the current URL.
   Future<void> reload() {
-    throw UnimplementedError(
-        "WebView reload is not implemented on the current platform");
+    throw UnimplementedError("WebView reload is not implemented on the current platform");
   }
 
   /// Clears all caches used by the [WebView].
@@ -247,8 +238,7 @@ abstract class WebViewPlatformController {
   ///	3. Application cache.
   ///	4. Local Storage.
   Future<void> clearCache() {
-    throw UnimplementedError(
-        "WebView clearCache is not implemented on the current platform");
+    throw UnimplementedError("WebView clearCache is not implemented on the current platform");
   }
 
   /// Evaluates a JavaScript expression in the context of the current page.
@@ -256,8 +246,7 @@ abstract class WebViewPlatformController {
   /// The Future completes with an error if a JavaScript error occurred, or if the type of the
   /// evaluated expression is not supported(e.g on iOS not all non primitive type can be evaluated).
   Future<String> evaluateJavascript(String javascriptString) {
-    throw UnimplementedError(
-        "WebView evaluateJavascript is not implemented on the current platform");
+    throw UnimplementedError("WebView evaluateJavascript is not implemented on the current platform");
   }
 
   /// Adds new JavaScript channels to the set of enabled channels.
@@ -272,8 +261,7 @@ abstract class WebViewPlatformController {
   ///
   /// See also: [CreationParams.javascriptChannelNames].
   Future<void> addJavascriptChannels(Set<String> javascriptChannelNames) {
-    throw UnimplementedError(
-        "WebView addJavascriptChannels is not implemented on the current platform");
+    throw UnimplementedError("WebView addJavascriptChannels is not implemented on the current platform");
   }
 
   /// Removes JavaScript channel names from the set of enabled channels.
@@ -281,46 +269,40 @@ abstract class WebViewPlatformController {
   /// This disables channels that were previously enabled by [addJavaScriptChannels] or through
   /// [CreationParams.javascriptChannelNames].
   Future<void> removeJavascriptChannels(Set<String> javascriptChannelNames) {
-    throw UnimplementedError(
-        "WebView removeJavascriptChannels is not implemented on the current platform");
+    throw UnimplementedError("WebView removeJavascriptChannels is not implemented on the current platform");
   }
 
   /// Returns the title of the currently loaded page.
-  Future<String?> getTitle() {
-    throw UnimplementedError(
-        "WebView getTitle is not implemented on the current platform");
+  Future<String> getTitle() {
+    throw UnimplementedError("WebView getTitle is not implemented on the current platform");
   }
 
   /// Set the scrolled position of this view.
   ///
   /// The parameters `x` and `y` specify the position to scroll to in WebView pixels.
   Future<void> scrollTo(int x, int y) {
-    throw UnimplementedError(
-        "WebView scrollTo is not implemented on the current platform");
+    throw UnimplementedError("WebView scrollTo is not implemented on the current platform");
   }
 
   /// Move the scrolled position of this view.
   ///
   /// The parameters `x` and `y` specify the amount of WebView pixels to scroll by.
   Future<void> scrollBy(int x, int y) {
-    throw UnimplementedError(
-        "WebView scrollBy is not implemented on the current platform");
+    throw UnimplementedError("WebView scrollBy is not implemented on the current platform");
   }
 
   /// Return the horizontal scroll position of this view.
   ///
   /// Scroll position is measured from left.
   Future<int> getScrollX() {
-    throw UnimplementedError(
-        "WebView getScrollX is not implemented on the current platform");
+    throw UnimplementedError("WebView getScrollX is not implemented on the current platform");
   }
 
   /// Return the vertical scroll position of this view.
   ///
   /// Scroll position is measured from top.
   Future<int> getScrollY() {
-    throw UnimplementedError(
-        "WebView getScrollY is not implemented on the current platform");
+    throw UnimplementedError("WebView getScrollY is not implemented on the current platform");
   }
 }
 
@@ -342,7 +324,7 @@ class WebSetting<T> {
       : _value = value,
         isPresent = true;
 
-  final T? _value;
+  final T _value;
 
   /// The setting's value.
   ///
@@ -396,28 +378,28 @@ class WebSettings {
     this.debuggingEnabled,
     this.gestureNavigationEnabled,
     this.allowsInlineMediaPlayback,
-    required this.userAgent,
+    @required this.userAgent,
   }) : assert(userAgent != null);
 
   /// The JavaScript execution mode to be used by the webview.
-  final JavascriptMode? javascriptMode;
+  final JavascriptMode javascriptMode;
 
   /// Whether the [WebView] has a [NavigationDelegate] set.
-  final bool? hasNavigationDelegate;
+  final bool hasNavigationDelegate;
 
   /// Whether the [WebView] should track page loading progress.
   /// See also: [WebViewPlatformCallbacksHandler.onProgress] to get the progress.
-  final bool? hasProgressTracking;
+  final bool hasProgressTracking;
 
   /// Whether to enable the platform's webview content debugging tools.
   ///
   /// See also: [WebView.debuggingEnabled].
-  final bool? debuggingEnabled;
+  final bool debuggingEnabled;
 
   /// Whether to play HTML5 videos inline or use the native full-screen controller on iOS.
   ///
   /// This will have no effect on Android.
-  final bool? allowsInlineMediaPlayback;
+  final bool allowsInlineMediaPlayback;
 
   /// The value used for the HTTP `User-Agent:` request header.
   ///
@@ -427,12 +409,12 @@ class WebSettings {
   /// last time it was set.
   ///
   /// See also [WebView.userAgent].
-  final WebSetting<String?> userAgent;
+  final WebSetting<String> userAgent;
 
   /// Whether to allow swipe based navigation in iOS.
   ///
   /// See also: [WebView.gestureNavigationEnabled]
-  final bool? gestureNavigationEnabled;
+  final bool gestureNavigationEnabled;
 
   @override
   String toString() {
@@ -453,19 +435,18 @@ class CreationParams {
     this.webSettings,
     this.javascriptChannelNames = const <String>{},
     this.userAgent,
-    this.autoMediaPlaybackPolicy =
-        AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
+    this.autoMediaPlaybackPolicy = AutoMediaPlaybackPolicy.require_user_action_for_all_media_types,
   }) : assert(autoMediaPlaybackPolicy != null);
 
   /// The initialUrl to load in the webview.
   ///
   /// When null the webview will be created without loading any page.
-  final String? initialUrl;
+  final String initialUrl;
 
   /// The initial [WebSettings] for the new webview.
   ///
   /// This can later be updated with [WebViewPlatformController.updateSettings].
-  final WebSettings? webSettings;
+  final WebSettings webSettings;
 
   /// The initial set of JavaScript channels that are configured for this webview.
   ///
@@ -483,7 +464,7 @@ class CreationParams {
   /// The value used for the HTTP User-Agent: request header.
   ///
   /// When null the platform's webview default is used for the User-Agent header.
-  final String? userAgent;
+  final String userAgent;
 
   /// Which restrictions apply on automatic media playback.
   final AutoMediaPlaybackPolicy autoMediaPlaybackPolicy;
@@ -497,8 +478,7 @@ class CreationParams {
 /// Signature for callbacks reporting that a [WebViewPlatformController] was created.
 ///
 /// See also the `onWebViewPlatformCreated` argument for [WebViewPlatform.build].
-typedef WebViewPlatformCreatedCallback = void Function(
-    WebViewPlatformController? webViewPlatformController);
+typedef WebViewPlatformCreatedCallback = void Function(WebViewPlatformController webViewPlatformController);
 
 /// Interface for a platform implementation of a WebView.
 ///
@@ -528,21 +508,20 @@ abstract class WebViewPlatform {
   ///
   /// `webViewPlatformHandler` must not be null.
   Widget build({
-    required BuildContext context,
+    @required BuildContext context,
     // TODO(amirh): convert this to be the actual parameters.
     // I'm starting without it as the PR is starting to become pretty big.
     // I'll followup with the conversion PR.
-    required CreationParams creationParams,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
+    @required CreationParams creationParams,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   });
 
   /// Clears all cookies for all [WebView] instances.
   ///
   /// Returns true if cookies were present before clearing, else false.
   Future<bool> clearCookies() {
-    throw UnimplementedError(
-        "WebView clearCookies is not implemented on the current platform");
+    throw UnimplementedError("WebView clearCookies is not implemented on the current platform");
   }
 }

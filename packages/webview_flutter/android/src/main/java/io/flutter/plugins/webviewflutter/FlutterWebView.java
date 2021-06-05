@@ -7,6 +7,7 @@ package io.flutter.plugins.webviewflutter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.hardware.display.DisplayManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +24,8 @@ import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.platform.PlatformView;
+
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -105,9 +108,14 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     // Allow local storage.
     webView.getSettings().setDomStorageEnabled(true);
     webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+    webView.setBackgroundColor(0x00000000);
 
     // Multi windows is set with FlutterWebChromeClient by default to handle internal bug: b/159892679.
     webView.getSettings().setSupportMultipleWindows(true);
+    webView.getSettings().setAllowContentAccess(true);
+    webView.getSettings().setAllowFileAccess(true);
+    webView.getSettings().setAllowFileAccessFromFileURLs(true);
+    webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
     webView.setWebChromeClient(new FlutterWebChromeClient());
 
     methodChannel = new MethodChannel(messenger, "plugins.flutter.io/webview_" + id);
@@ -254,8 +262,42 @@ public class FlutterWebView implements PlatformView, MethodCallHandler {
     if (headers == null) {
       headers = Collections.emptyMap();
     }
-    webView.loadUrl(url, headers);
+
+    if (Uri.parse(url).isAbsolute()) {
+      webView.loadUrl(url, headers);
+    } else {
+      loadFile(url, headers, result);
+    }
     result.success(null);
+  }
+
+  @SuppressWarnings("unchecked")
+  private void loadFile(MethodCall methodCall, Result result) {
+    Map<String, Object> request = (Map<String, Object>) methodCall.arguments;
+    String url = (String) request.get("url");
+    Map<String, String> headers = (Map<String, String>) request.get("headers");
+    if (headers == null) {
+      headers = Collections.emptyMap();
+    }
+    loadFile(url, headers, result);
+    result.success(null);
+  }
+
+  public void loadFile(String url, Map<String, String> headers, MethodChannel.Result result) {
+    try {
+      url = Util.getUrlAsset(url);
+    } catch (IOException e) {
+      result.error("WebViewFlutter", url + " asset file cannot be found!", e);
+      return;
+    }
+
+    if (!url.isEmpty()) {
+      webView.loadUrl(url, headers);
+    } else {
+      result.error("WebViewFlutter", "url is empty", null);
+      return;
+    }
+    result.success(true);
   }
 
   private void canGoBack(Result result) {

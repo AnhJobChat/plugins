@@ -20,11 +20,11 @@ import 'webview_method_channel.dart';
 class CupertinoWebView implements WebViewPlatform {
   @override
   Widget build({
-    required BuildContext context,
-    required CreationParams creationParams,
-    required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
-    WebViewPlatformCreatedCallback? onWebViewPlatformCreated,
-    Set<Factory<OneSequenceGestureRecognizer>>? gestureRecognizers,
+    @required BuildContext context,
+    @required CreationParams creationParams,
+    @required WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler,
+    WebViewPlatformCreatedCallback onWebViewPlatformCreated,
+    Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   }) {
     return UiKitView(
       viewType: 'plugins.flutter.io/webview',
@@ -32,12 +32,10 @@ class CupertinoWebView implements WebViewPlatform {
         if (onWebViewPlatformCreated == null) {
           return;
         }
-        onWebViewPlatformCreated(
-            MethodChannelWebViewPlatform(id, webViewPlatformCallbacksHandler));
+        onWebViewPlatformCreated(MethodChannelWebViewPlatform(id, webViewPlatformCallbacksHandler));
       },
       gestureRecognizers: gestureRecognizers,
-      creationParams:
-          MethodChannelWebViewPlatform.creationParamsToMap(creationParams),
+      creationParams: MethodChannelWebViewPlatform.creationParamsToMap(creationParams),
       creationParamsCodec: const StandardMessageCodec(),
     );
   }
